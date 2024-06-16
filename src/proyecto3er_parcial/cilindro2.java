@@ -27,7 +27,7 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
 
     private double faseOnda = 0;
 
-//    private Esfera3D rotatingSphere;
+    private Esfera3D rotatingSphere;
     private Esfera3D movingSphere;
 
     // Variable para mantener el estado del movimiento
@@ -49,7 +49,7 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
 
         generarVertices();
 
-//        rotatingSphere = new Esfera3D(25, this, true, true); // Rotating sphere with radius 25
+        rotatingSphere = new Esfera3D(25, this, true, true); // Rotating sphere with radius 25
         movingSphere = new Esfera3D(30, this, false, false); // Moving sphere with radius 25 and rotating on axis
     }
 
@@ -147,7 +147,7 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
         }
 
         // Dibujar la esfera que rota después del cilindro
-//        rotatingSphere.paintSphere(buffer);
+        rotatingSphere.paintSphere(buffer);
         g.drawImage(buffer.getBuffer(), 0, 0, null);
         buffer.resetBuffer();
     }
@@ -196,10 +196,10 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
                 animacionActiva = !animacionActiva;
                 if (animacionActiva) {
                     new Thread(this).start();
-//                    rotatingSphere.startAnimation();
+                    rotatingSphere.startAnimation();
                     movingSphere.startAnimation();
                 } else {
-//                    rotatingSphere.stopAnimation();
+                    rotatingSphere.stopAnimation();
                     movingSphere.stopAnimation();
                 }
                 break;
