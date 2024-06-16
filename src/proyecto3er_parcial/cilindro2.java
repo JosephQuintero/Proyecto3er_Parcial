@@ -27,11 +27,13 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
 
     private double faseOnda = 0;
 
-    private Esfera3D rotatingSphere;
+//    private Esfera3D rotatingSphere;
     private Esfera3D movingSphere;
 
     // Variable para mantener el estado del movimiento
     private boolean goingUp = true;
+    private double anguloRotacionY = 0; // Ángulo de rotación acumulado
+    private int direccionRotacion = 0; // 0: sin rotación, -1: izquierda, 1: derecha
 
     public cilindro2() {
         JFrame frame = new JFrame();
@@ -49,7 +51,7 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
 
         generarVertices();
 
-        rotatingSphere = new Esfera3D(25, this, true, true); // Rotating sphere with radius 25
+//        rotatingSphere = new Esfera3D(25, this, true, true); // Rotating sphere with radius 25
         movingSphere = new Esfera3D(30, this, false, false); // Moving sphere with radius 25 and rotating on axis
     }
 
@@ -82,6 +84,9 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
             return;
         }
 
+        // Rotar vértices antes de trasladarlos
+        rotarVertices();
+
         double[][] verticesTrasladados = new double[vertices.size()][3];
         for (int i = 0; i < vertices.size(); i++) {
             double[] vertice = vertices.get(i);
@@ -112,10 +117,10 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
                 int index3 = (i + 1) * numPuntos + (j + 1) % numPuntos;
 
                 // Verificar que los índices estén dentro de los límites del array
-                if (index0 < verticesTrasladados.length &&
-                    index1 < verticesTrasladados.length &&
-                    index2 < verticesTrasladados.length &&
-                    index3 < verticesTrasladados.length) {
+                if (index0 < verticesTrasladados.length
+                        && index1 < verticesTrasladados.length
+                        && index2 < verticesTrasladados.length
+                        && index3 < verticesTrasladados.length) {
 
                     double[] v0 = verticesTrasladados[index0];
                     double[] v1 = verticesTrasladados[index1];
@@ -147,9 +152,46 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
         }
 
         // Dibujar la esfera que rota después del cilindro
-        rotatingSphere.paintSphere(buffer);
+//        rotatingSphere.paintSphere(buffer);
         g.drawImage(buffer.getBuffer(), 0, 0, null);
         buffer.resetBuffer();
+    }
+
+    private void rotarVertices() {
+        for (int i = 0; i < vertices.size(); i++) {
+            double[] vertice = vertices.get(i);
+            vertices.set(i, rotarY(vertice, anguloRotacionY));
+        }
+    }
+
+    private double[] rotar(double[] punto, double anguloX, double anguloY, double anguloZ) {
+        double[] rotadoX = rotarX(punto, anguloX);
+        double[] rotadoY = rotarY(rotadoX, anguloY);
+        return rotarZ(rotadoY, anguloZ);
+    }
+
+    private double[] rotarX(double[] point, double angle) {
+        double[] result = new double[3];
+        result[0] = point[0];
+        result[1] = point[1] * Math.cos(Math.toRadians(angle)) - point[2] * Math.sin(Math.toRadians(angle));
+        result[2] = point[1] * Math.sin(Math.toRadians(angle)) + point[2] * Math.cos(Math.toRadians(angle));
+        return result;
+    }
+
+    private double[] rotarY(double[] point, double angle) {
+        double[] result = new double[3];
+        result[0] = point[0] * Math.cos(Math.toRadians(angle)) + point[2] * Math.sin(Math.toRadians(angle));
+        result[1] = point[1];
+        result[2] = -point[0] * Math.sin(Math.toRadians(angle)) + point[2] * Math.cos(Math.toRadians(angle));
+        return result;
+    }
+
+    private double[] rotarZ(double[] point, double angle) {
+        double[] result = new double[3];
+        result[0] = point[0] * Math.cos(Math.toRadians(angle)) - point[1] * Math.sin(Math.toRadians(angle));
+        result[1] = point[0] * Math.sin(Math.toRadians(angle)) + point[1] * Math.cos(Math.toRadians(angle));
+        result[2] = point[2];
+        return result;
     }
 
     private void rellenarTriangulo(Graficos3D buffer, int x0, int y0, int x1, int y1, int x2, int y2, Color color) {
@@ -196,16 +238,36 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
                 animacionActiva = !animacionActiva;
                 if (animacionActiva) {
                     new Thread(this).start();
-                    rotatingSphere.startAnimation();
+//                    rotatingSphere.startAnimation();
                     movingSphere.startAnimation();
                 } else {
-                    rotatingSphere.stopAnimation();
+//                    rotatingSphere.stopAnimation();
                     movingSphere.stopAnimation();
                 }
                 break;
             case KeyEvent.VK_R:
                 rellenarCilindro = !rellenarCilindro;
                 repaint();
+                break;
+            case KeyEvent.VK_LEFT:
+                anguloRotacionY -= 1;
+                repaint();
+                break;
+            case KeyEvent.VK_RIGHT:
+                anguloRotacionY += 1;
+                repaint();
+                break;
+            case KeyEvent.VK_G:
+                if(animacionActiva = false){
+                animacionActiva = true; // Iniciar la animación si no está ya activa
+                direccionRotacion = (direccionRotacion == 0) ? 1 : direccionRotacion; // Rotar a la derecha si no hay rotación
+                new Thread(this).start();
+                }else
+                direccionRotacion = (direccionRotacion == 0) ? 1 : direccionRotacion; // Rotar a la derecha si no hay rotación
+                new Thread(this).start();
+                break;
+            case KeyEvent.VK_S:
+                direccionRotacion = 0; // Detener la rotación
                 break;
         }
         repaint();
@@ -244,6 +306,11 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
                 if (movingSphere.getCenter()[1] >= getHeight() - movingSphere.getRadius()) {
                     goingUp = true;
                 }
+            }
+
+//             Actualizar ángulo de rotación basado en la dirección
+            if (direccionRotacion != 0) {
+                anguloRotacionY += direccionRotacion * 2; // Ajustar velocidad de rotación según sea necesario
             }
 
             repaint();
