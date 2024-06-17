@@ -10,7 +10,7 @@ class Esfera3D implements Runnable {
     private final cilindro2 parent;
     private boolean animacionActiva = false;
     private double anguloY = 0;
-    private final double speed = 4;
+    private double speed = 0.5;
     private final boolean rotating;
     private final boolean rotateOnAxis;
 
@@ -40,6 +40,10 @@ class Esfera3D implements Runnable {
 
     public double[] getCenter() {
         return center;
+    }
+    
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 
     public double getRadius() {

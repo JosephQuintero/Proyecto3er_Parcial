@@ -258,12 +258,13 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
                 repaint();
                 break;
             case KeyEvent.VK_G:
-                if(animacionActiva = false){
-                animacionActiva = true; // Iniciar la animación si no está ya activa
-                direccionRotacion = (direccionRotacion == 0) ? 1 : direccionRotacion; // Rotar a la derecha si no hay rotación
-                new Thread(this).start();
-                }else
-                direccionRotacion = (direccionRotacion == 0) ? 1 : direccionRotacion; // Rotar a la derecha si no hay rotación
+                if (animacionActiva = false) {
+                    animacionActiva = true; // Iniciar la animación si no está ya activa
+                    direccionRotacion = (direccionRotacion == 0) ? 1 : direccionRotacion; // Rotar a la derecha si no hay rotación
+                    new Thread(this).start();
+                } else {
+                    direccionRotacion = (direccionRotacion == 0) ? 1 : direccionRotacion; // Rotar a la derecha si no hay rotación
+                }
                 new Thread(this).start();
                 break;
             case KeyEvent.VK_S:
@@ -271,6 +272,16 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
                 break;
         }
         repaint();
+    }
+
+    private double calcularRadioEsfera() {
+        // Calcular la amplitud de la onda en la posición de la esfera
+        double y = movingSphere.getCenter()[1] / escala - puntoCubo[1] / escala;
+        double alpha = (y / numPuntos) * anguloMaximo;
+        double radioOnda = 2 + Math.cos(alpha + faseOnda);
+
+        // Ajustar el radio de la esfera basado en la amplitud de la onda
+        return 25 + 10 * Math.abs(radioOnda - 2);
     }
 
     @Override
@@ -288,11 +299,15 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
     @Override
     public void run() {
         while (animacionActiva) {
-            faseOnda += 0.1; // Incrementar la fase de la onda para crear el efecto de expansión y contracción
+            faseOnda += 0.063; // Incrementar la fase de la onda para crear el efecto de expansión y contracción
             generarVertices(); // Regenerar los vértices con la nueva fase de la onda
-
+//0.058
             // Calcular el nuevo radio para la esfera en movimiento
-            double nuevoRadio = 25 + 10 * Math.sin(faseOnda); // Ajustar los valores según sea necesario
+//            double nuevoRadio = 25 + 10 * Math.sin(faseOnda); // Ajustar los valores según sea necesario
+//            movingSphere.setRadius(nuevoRadio);
+//0.96
+            // Calcular el nuevo radio para la esfera en movimiento
+            double nuevoRadio = 34 + 25 * Math.sin(Math.cos(1.0*faseOnda)); // Ajustar los valores según sea necesario
             movingSphere.setRadius(nuevoRadio);
 
             // Mover la esfera
