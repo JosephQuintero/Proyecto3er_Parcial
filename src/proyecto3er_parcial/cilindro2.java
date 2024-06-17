@@ -1,6 +1,7 @@
 package proyecto3er_Parcial;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -80,6 +81,17 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        
+        // Dibujar el menú de acciones
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.PLAIN, 12));
+        g.drawString("Menu de acciones:", 10, 20);
+        g.drawString("Tecla SPACE -> Iniciar Animacion.", 10, 40);
+        g.drawString("Tecla R -> Rellenar cilindro.", 10, 60);
+        g.drawString("Tecla Left -> Mover a la izquierda.", 10, 80);
+        g.drawString("Tecla Right -> Mover a la derecha.", 10, 100);
+        g.drawString("Tecla G -> Rotar cilindro.", 10, 120);
+        g.drawString("Tecla S -> Detener rotacion cilindro.", 10, 140);
 
         // Verificar que vertices no esté vacío antes de acceder a sus elementos
         if (vertices.isEmpty()) {
