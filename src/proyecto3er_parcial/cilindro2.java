@@ -81,7 +81,7 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
+
         // Dibujar el menú de acciones
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -92,7 +92,8 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
         g.drawString("Tecla Right -> Mover a la derecha.", 10, 100);
         g.drawString("Tecla G -> Rotar cilindro.", 10, 120);
         g.drawString("Tecla S -> Detener rotacion cilindro.", 10, 140);
-
+        g.drawString("Tecla E -> Rellenar Esfera Rotante.", 10, 160);
+        
         // Verificar que vertices no esté vacío antes de acceder a sus elementos
         if (vertices.isEmpty()) {
             System.out.println("El array vertices está vacío.");
@@ -121,7 +122,6 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
         if (!rellenarCilindro) {
             // Dibujar la esfera que se mueve primero
             movingSphere.paintSphere(buffer);
-//            rotatingSphere.paintSphere(buffer);
         }
 
         // Dibujar el cilindro con colores del arcoiris
@@ -167,12 +167,12 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
             }
         }
 
-        if (!rellenarCilindro) {
-            // Dibujar la esfera que rota después del cilindro
-            if (rotatingSphere != null) {
-                rotatingSphere.paintSphere(buffer);
-            }
-        }
+//        if (!rellenarCilindro) {
+        // Dibujar la esfera que rota después del cilindro
+//            if (rotatingSphere != null) {
+        rotatingSphere.paintSphere(buffer);
+//            }
+//        }
         // Dibujar la esfera que rota después del cilindro
 //        rotatingSphere.paintSphere(buffer);
         g.drawImage(buffer.getBuffer(), 0, 0, null);
@@ -216,7 +216,7 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
         return result;
     }
 
-    private void rellenarTriangulo(Graficos3D buffer, int x0, int y0, int x1, int y1, int x2, int y2, Color color) {
+    public void rellenarTriangulo(Graficos3D buffer, int x0, int y0, int x1, int y1, int x2, int y2, Color color) {
         int[] xs = {x0, x1, x2};
         int[] ys = {y0, y1, y2};
         int ymin = Math.min(y0, Math.min(y1, y2));
@@ -292,6 +292,10 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
             case KeyEvent.VK_S:
                 direccionRotacion = 0; // Detener la rotación
                 break;
+            case KeyEvent.VK_E:
+                rotatingSphere.toggleRellenarEsfera();
+                repaint();
+                break;
         }
         repaint();
     }
@@ -329,7 +333,7 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
 //            movingSphere.setRadius(nuevoRadio);
 //0.96
             // Calcular el nuevo radio para la esfera en movimiento
-            double nuevoRadio = 34 + 25 * Math.sin(Math.cos(1.0 * faseOnda)); // Ajustar los valores según sea necesario
+            double nuevoRadio = 30 + 25 * Math.sin(Math.cos(1.0 * faseOnda)); // Ajustar los valores según sea necesario
             movingSphere.setRadius(nuevoRadio);
 
             // Mover la esfera
