@@ -41,13 +41,17 @@ class Esfera3D implements Runnable {
     public double[] getCenter() {
         return center;
     }
-    
+
     public void setSpeed(double speed) {
         this.speed = speed;
     }
 
     public double getRadius() {
         return radius;
+    }
+
+    public boolean isAnimacionActiva() {
+        return animacionActiva;
     }
 
     public void startAnimation() {
@@ -76,12 +80,14 @@ class Esfera3D implements Runnable {
             }
 
             if (rotateOnAxis) {
-                anguloY += 2; // Rotate the sphere on its axis
+                anguloY += 4; // Rotate the sphere on its axis
             }
 
             // Ajustar la coordenada Z de rotatingSphere para que pase por delante y detrás del cilindro
             if (rotating) {
-                center[2] = (parent.getHeight() / 2) - Math.sin(Math.toRadians(anguloY)) * (parent.getWidth() / 2); // Ajustar la profundidad
+                center[2] = (parent.getHeight() / 2) - Math.sin(Math.toRadians(anguloY)) * (parent.getWidth() / 2);
+                // Asegurar que la coordenada Z se mantenga dentro de los márgenes del JFrame
+                center[2] = Math.max(0, Math.min(parent.getHeight(), center[2]));
             }
 
             parent.repaint();

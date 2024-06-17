@@ -29,6 +29,7 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
 
 //    private Esfera3D rotatingSphere;
     private Esfera3D movingSphere;
+    private EsferaRotante rotatingSphere;
 
     // Variable para mantener el estado del movimiento
     private boolean goingUp = true;
@@ -51,8 +52,10 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
 
         generarVertices();
 
-//        rotatingSphere = new Esfera3D(25, this, true, true); // Rotating sphere with radius 25
+//        rotatingSphere = new Esfera3D(30, this, true, true); // Rotating sphere with radius 25
         movingSphere = new Esfera3D(30, this, false, false); // Moving sphere with radius 25 and rotating on axis
+        rotatingSphere = new EsferaRotante(15, this, 150); // Rotating sphere with radius 25
+
     }
 
     private void generarVertices() {
@@ -106,6 +109,7 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
         if (!rellenarCilindro) {
             // Dibujar la esfera que se mueve primero
             movingSphere.paintSphere(buffer);
+//            rotatingSphere.paintSphere(buffer);
         }
 
         // Dibujar el cilindro con colores del arcoiris
@@ -151,6 +155,12 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
             }
         }
 
+        if (!rellenarCilindro) {
+            // Dibujar la esfera que rota después del cilindro
+            if (rotatingSphere != null) {
+                rotatingSphere.paintSphere(buffer);
+            }
+        }
         // Dibujar la esfera que rota después del cilindro
 //        rotatingSphere.paintSphere(buffer);
         g.drawImage(buffer.getBuffer(), 0, 0, null);
@@ -238,11 +248,11 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
                 animacionActiva = !animacionActiva;
                 if (animacionActiva) {
                     new Thread(this).start();
-//                    rotatingSphere.startAnimation();
                     movingSphere.startAnimation();
+                    rotatingSphere.startAnimation();
                 } else {
-//                    rotatingSphere.stopAnimation();
                     movingSphere.stopAnimation();
+                    rotatingSphere.stopAnimation();
                 }
                 break;
             case KeyEvent.VK_R:
@@ -307,7 +317,7 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
 //            movingSphere.setRadius(nuevoRadio);
 //0.96
             // Calcular el nuevo radio para la esfera en movimiento
-            double nuevoRadio = 34 + 25 * Math.sin(Math.cos(1.0*faseOnda)); // Ajustar los valores según sea necesario
+            double nuevoRadio = 34 + 25 * Math.sin(Math.cos(1.0 * faseOnda)); // Ajustar los valores según sea necesario
             movingSphere.setRadius(nuevoRadio);
 
             // Mover la esfera
@@ -341,5 +351,9 @@ public class cilindro2 extends JPanel implements KeyListener, Runnable {
         // ratio is between 0 and 1
         int hue = (int) (ratio * 360); // hue from 0 to 360
         return Color.getHSBColor(hue / 360f, 1.0f, 1.0f); // full saturation and brightness
+    }
+
+    public double getFaseOnda() {
+        return faseOnda;
     }
 }
